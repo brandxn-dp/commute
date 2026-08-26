@@ -1,0 +1,48 @@
+# Standard self-hosting path: app + Postgres.
+#
+# Quick start:
+#   1. cp .env.example .env   and edit values (at minimum SESSION_SECRET, APP_URL)
+#   2. docker compose up -d
+#   3. open http://localhost:3000  (health at /api/health)
+#
+# The app image is pulled from GHCR by default. To build locally instead, run:
+#   docker compose up -d --build
+services:
+  db:
+    image: postgres:16.6-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-commute}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-commute}
+      POSTGRES_DB: ${POSTGRES_DB:-commute}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-commute} -d ${POSTGRES_DB:-commute}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  app:
+    # Pull the published multi-arch image. Override COMMUTE_IMAGE to pin a tag.
+    image: ${COMMUTE_IMAGE:-ghcr.io/OWNER/commute:latest}
+    # Uncomment to build from source instead of pulling:
+    # build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://commute:commute@db:5432/commute}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET must be set in .env}
+      PORT: ${PORT:-3000}
+      DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE:-America/New_York}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      TRAVEL_PROVIDER: ${TRAVEL_PROVIDER:-fixed}
+    ports:
+      - "${PORT:-3000}:3000"
+
+volumes:
+  db-data:

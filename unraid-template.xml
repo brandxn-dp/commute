@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!--
+  Unraid Community Applications template for Commute (the app container).
+
+  Commute needs a PostgreSQL 15+ database. On Unraid, run one (e.g. the
+  official `postgres` CA template) first, then point DATABASE_URL at it.
+  See SETUP_UNRAID.md for the full walk-through.
+
+  Replace OWNER with your GitHub org/user before publishing this template.
+-->
+<Container version="2">
+  <Name>Commute</Name>
+  <Repository>ghcr.io/OWNER/commute:latest</Repository>
+  <Registry>https://github.com/OWNER/commute/pkgs/container/commute</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/OWNER/commute/issues</Support>
+  <Project>https://github.com/OWNER/commute</Project>
+  <Overview>Self-hosted, location-aware auto-scheduling calendar PWA. Treats real travel time between places as a first-class scheduling constraint. Requires a PostgreSQL 15+ database (run one separately and set DATABASE_URL).</Overview>
+  <Category>Productivity: HomeAutomation: Tools:</Category>
+  <WebUI>http://[IP]:[PORT:3000]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/OWNER/commute/main/unraid-template.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/OWNER/commute/main/public/icon.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Description>Self-hosted, location-aware auto-scheduling calendar. Needs an external PostgreSQL 15+ database.</Description>
+
+  <Config Name="WebUI Port" Target="3000" Default="3000" Mode="tcp" Description="Host port to reach the web UI on." Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+
+  <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="postgres://commute:commute@YOUR_DB_HOST:5432/commute" Mode="" Description="PostgreSQL connection string for your database container." Type="Variable" Display="always" Required="true" Mask="false"></Config>
+
+  <Config Name="APP_URL" Target="APP_URL" Default="https://commute.example.com" Mode="" Description="Full external URL users reach this app on (scheme + host, no trailing slash). Must match your reverse-proxy address or OAuth callbacks will break." Type="Variable" Display="always" Required="true" Mask="false"></Config>
+
+  <Config Name="SESSION_SECRET" Target="SESSION_SECRET" Default="" Mode="" Description="Random secret, at least 32 chars. Generate with: openssl rand -base64 48" Type="Variable" Display="always" Required="true" Mask="true"></Config>
+
+  <Config Name="DEFAULT_TIMEZONE" Target="DEFAULT_TIMEZONE" Default="America/New_York" Mode="" Description="IANA timezone the schedule is displayed in." Type="Variable" Display="always" Required="false" Mask="false">America/New_York</Config>
+
+  <Config Name="ADMIN_EMAIL" Target="ADMIN_EMAIL" Default="" Mode="" Description="Optional. Email guaranteed admin/owner on first boot." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="TRAVEL_PROVIDER" Target="TRAVEL_PROVIDER" Default="fixed" Mode="" Description="Travel-time source: 'fixed' (no API key, hand-entered) or 'google' (Google Routes API)." Type="Variable" Display="advanced" Required="false" Mask="false">fixed</Config>
+</Container>
