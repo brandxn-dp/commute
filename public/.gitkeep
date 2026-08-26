@@ -1,0 +1,2 @@
+# Keeps the public/ directory present so the Docker COPY of it never fails.
+# PWA assets (manifest, icons, service worker) land here in Phase 7.
