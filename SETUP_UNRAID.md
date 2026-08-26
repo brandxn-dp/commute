@@ -2,7 +2,7 @@
 
 Commute is one container plus a PostgreSQL container. This guide covers both.
 
-> Replace `OWNER` with the GitHub org/user this repo is published under wherever
+> Replace `brandxn-dp` with the GitHub org/user this repo is published under wherever
 > it appears (image name, template URL).
 
 ## 0. Prerequisites
@@ -39,7 +39,7 @@ Until Commute is in the Community Applications store, add its template by URL:
 
 1. **Docker** tab → **Add Container**.
 2. In **Template**, paste:
-   `https://raw.githubusercontent.com/OWNER/commute/main/unraid-template.xml`
+   `https://raw.githubusercontent.com/brandxn-dp/commute/main/unraid-template.xml`
 3. Fill in the fields:
 
    | Field | Value |

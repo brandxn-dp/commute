@@ -25,10 +25,10 @@ services:
       start_period: 10s
 
   app:
-    # Pull the published multi-arch image. Override COMMUTE_IMAGE to pin a tag.
-    image: ${COMMUTE_IMAGE:-ghcr.io/OWNER/commute:latest}
-    # Uncomment to build from source instead of pulling:
-    # build: .
+    # `docker compose up -d`         → pulls the published GHCR image.
+    # `docker compose up -d --build` → builds locally and tags it as this image.
+    image: ${COMMUTE_IMAGE:-ghcr.io/brandxn-dp/commute:latest}
+    build: .
     restart: unless-stopped
     depends_on:
       db:

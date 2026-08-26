@@ -6,23 +6,23 @@
   official `postgres` CA template) first, then point DATABASE_URL at it.
   See SETUP_UNRAID.md for the full walk-through.
 
-  Replace OWNER with your GitHub org/user before publishing this template.
+  Replace brandxn-dp with your GitHub org/user before publishing this template.
 -->
 <Container version="2">
   <Name>Commute</Name>
-  <Repository>ghcr.io/OWNER/commute:latest</Repository>
-  <Registry>https://github.com/OWNER/commute/pkgs/container/commute</Registry>
+  <Repository>ghcr.io/brandxn-dp/commute:latest</Repository>
+  <Registry>https://github.com/brandxn-dp/commute/pkgs/container/commute</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>sh</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/OWNER/commute/issues</Support>
-  <Project>https://github.com/OWNER/commute</Project>
+  <Support>https://github.com/brandxn-dp/commute/issues</Support>
+  <Project>https://github.com/brandxn-dp/commute</Project>
   <Overview>Self-hosted, location-aware auto-scheduling calendar PWA. Treats real travel time between places as a first-class scheduling constraint. Requires a PostgreSQL 15+ database (run one separately and set DATABASE_URL).</Overview>
   <Category>Productivity: HomeAutomation: Tools:</Category>
   <WebUI>http://[IP]:[PORT:3000]/</WebUI>
-  <TemplateURL>https://raw.githubusercontent.com/OWNER/commute/main/unraid-template.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/OWNER/commute/main/public/icon.png</Icon>
+  <TemplateURL>https://raw.githubusercontent.com/brandxn-dp/commute/main/unraid-template.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/brandxn-dp/commute/main/public/icon.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <DateInstalled/>
