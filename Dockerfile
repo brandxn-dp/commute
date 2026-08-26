@@ -4,7 +4,7 @@
 # Every base image is pinned (operational requirement §7.1) — no floating tags.
 
 # ---- Build stage ----------------------------------------------------------
-FROM node:22.15.0-bookworm-slim AS build
+FROM node:26.6.0-bookworm-slim AS build
 WORKDIR /app
 ENV NODE_ENV=production
 
@@ -20,7 +20,7 @@ COPY . .
 RUN npm run build && npm run build:ops
 
 # ---- Runtime stage --------------------------------------------------------
-FROM node:22.15.0-bookworm-slim AS runtime
+FROM node:26.6.0-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000 \
