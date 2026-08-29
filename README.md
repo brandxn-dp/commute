@@ -9,18 +9,19 @@ Runs as a single Docker container on your own server (built for Unraid, works
 anywhere Docker does), installs as a PWA on iOS/Android, and syncs two-way with
 Google Calendar.
 
-> **Status: Phase 1 of 7 — deployment skeleton.**
-> This phase is plumbing only. See [What works today](#what-works-today) for an
-> honest picture. Calendar features come in later phases.
+> **Status: Phase 2 of 7 — calendar core.**
+> Deployment plumbing (Phase 1) plus a working calendar: sign-in, manual events
+> and tasks, and a drag-and-drop week/day view. See
+> [What works today](#what-works-today) for an honest picture. Auto-scheduling,
+> places/travel, and Google sync come in later phases.
 
 ---
 
 ## What works today
 
-Phase 1 deliberately ships **no calendar features**. Its job is to prove the
-deployment story is solid before any feature is built — because the painful
-failures in comparable self-hosted projects are almost all boot/ops failures,
-not feature bugs. What is implemented and tested:
+**Phase 1 — deployment plumbing** (proven solid before any feature, because the
+painful failures in comparable self-hosted projects are boot/ops failures, not
+feature bugs):
 
 - ✅ Single Docker image, multi-arch (amd64 + arm64), published to GHCR by CI.
 - ✅ `docker-compose.yml` (app + Postgres) and an Unraid template.
@@ -37,14 +38,27 @@ not feature bugs. What is implemented and tested:
   `promote-admin` CLI are escape hatches.
 - ✅ **Legible startup logs** — a healthy boot is a short, clean sequence.
 
+**Phase 2 — calendar core:**
+
+- ✅ **Sign-in.** First run creates the owner account (password set on the setup
+  screen); after that it's a normal login. Sessions are stateless signed cookies
+  (Node scrypt password hashing, HMAC-signed tokens — no extra crypto deps).
+- ✅ **Manual events** — create, edit, move, resize, delete. Events can carry a
+  location (freeform for now; becomes a travel input in Phase 4).
+- ✅ **Drag-and-drop week/day view** — click-drag to create, drag to move
+  (across days), drag the bottom edge to resize. 15-minute snapping, overlap
+  lanes, a "now" line. Rendered **timezone-correctly** (stored UTC, shown in the
+  display zone) with DST handled through Luxon zones — a lecture won't drift
+  across a DST change (there's a test for exactly that).
+- ✅ **Tasks backlog** — create/edit/delete tasks with the scheduling inputs the
+  Phase 3 solver will use (duration, deadline, priority, splittable + min chunk,
+  energy). Traffic-light priority colouring; mark done/reopen.
+
 ## What does **not** work yet
 
-Everything else. Explicitly, none of these exist in Phase 1:
-
-- ❌ Auth / login / signup UI (the users table and bootstrap exist; the login
-  flow lands in Phase 2).
-- ❌ Any calendar UI, events, or tasks.
-- ❌ The scheduling engine (Phase 3).
+- ❌ The scheduling engine — tasks are a manual backlog; nothing auto-places them
+  onto the calendar yet (Phase 3).
+- ❌ Recurring events (the `protected` type exists but recurrence rules don't).
 - ❌ Places, travel time, feasibility filtering (Phases 4–5).
 - ❌ Google Calendar sync (Phase 6).
 - ❌ PWA install / offline / push notifications (Phase 7).

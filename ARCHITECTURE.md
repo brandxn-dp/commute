@@ -76,7 +76,30 @@ runtime needs no package manager and no `tsx`.
 `REQUIRED_TABLES` in `src/db/schema.ts` is the list the health check verifies;
 it grows as tables are added.
 
-### Planned data model (Phases 2–6)
+### Implemented (Phase 2)
+
+- **`events`** — concrete, time-placed calendar entries (manual now). UTC
+  `start_at`/`end_at` (CHECK `end >= start`), optional freeform `location`, a
+  `kind` of `event` or `protected` (recurring commitments; recurrence rules come
+  later), and a `busy` flag. Indexed by `(user_id, start_at)`.
+- **`tasks`** — the flexible-work backlog. Carries every scheduling input the
+  Phase 3 solver needs (`duration_minutes`, `deadline`, `earliest_start`,
+  `priority` 1–4, `splittable` + `min_chunk_minutes`, `energy`), plus `status`.
+  CRUD only in Phase 2. Indexed by `(user_id, status)`.
+
+Auth is a stateless signed-cookie session (see §Auth below), so no `sessions`
+table. `REQUIRED_TABLES` now includes `events` and `tasks`.
+
+### Auth (Phase 2)
+
+Single-user, so no server-side session store. Passwords are hashed with Node's
+built-in **scrypt** (params embedded in the stored hash); sessions are compact
+**HMAC-signed tokens** (`payload.signature`, keyed on `SESSION_SECRET`, with an
+expiry) carried in an HttpOnly cookie. No third-party auth or crypto
+dependencies. First run: if no account has a password, the login screen becomes
+a one-time owner-setup form (claiming an `ADMIN_EMAIL`-seeded row if present).
+
+### Planned data model (Phases 3–6)
 
 - **`calendars`** — synced Google calendars; per-calendar `is_busy_source` and
   `is_write_target` toggles. One dedicated "Commute" calendar is the write
