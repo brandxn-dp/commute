@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { Pool } from "pg";
+import pg from "pg";
+const { Pool } = pg;
 import { createEphemeralDb, hasTestDb, type EphemeralDb } from "./helpers/db.js";
 import { runMigrations } from "../src/db/migrate.js";
 import { checkHealth } from "../src/lib/health.js";

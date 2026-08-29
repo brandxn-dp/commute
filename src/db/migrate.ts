@@ -14,7 +14,9 @@
  */
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { Pool } from "pg";
+import pg from "pg";
+const { Pool } = pg;
+type PgPool = InstanceType<typeof Pool>;
 import { readFileSync } from "node:fs";
 import { join, isAbsolute } from "node:path";
 import { log } from "../lib/logger.js";
@@ -35,7 +37,7 @@ function resolveMigrationsDir(): string {
 }
 
 /** Count migrations recorded in Drizzle's own tracking table (schema drizzle). */
-async function countAppliedMigrations(pool: Pool): Promise<number> {
+async function countAppliedMigrations(pool: PgPool): Promise<number> {
   try {
     const res = await pool.query<{ count: string }>(
       `select count(*)::text as count from drizzle.__drizzle_migrations`,

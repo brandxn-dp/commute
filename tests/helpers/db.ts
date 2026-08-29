@@ -8,7 +8,8 @@
  * When TEST_DATABASE_URL is unset (typical local dev without Postgres), callers
  * skip the suite via `hasTestDb`.
  */
-import { Pool } from "pg";
+import pg from "pg";
+const { Pool } = pg;
 import { randomUUID } from "node:crypto";
 
 export const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;

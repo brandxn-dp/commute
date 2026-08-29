@@ -6,15 +6,17 @@
  * throwaway database.
  */
 import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import pg from "pg";
+const { Pool } = pg;
+type PgPool = InstanceType<typeof Pool>;
 import * as schema from "./schema.js";
 
 export type Db = NodePgDatabase<typeof schema>;
 
-let sharedPool: Pool | null = null;
+let sharedPool: PgPool | null = null;
 let sharedDb: Db | null = null;
 
-export function getPool(databaseUrl: string): Pool {
+export function getPool(databaseUrl: string): PgPool {
   if (!sharedPool) {
     sharedPool = new Pool({
       connectionString: databaseUrl,
@@ -38,7 +40,7 @@ export function getDb(databaseUrl: string): Db {
  * Construct an isolated client (own pool) — used by tests and short-lived
  * scripts that must not share the process-wide singleton.
  */
-export function createDb(databaseUrl: string): { db: Db; pool: Pool } {
+export function createDb(databaseUrl: string): { db: Db; pool: PgPool } {
   const pool = new Pool({ connectionString: databaseUrl, max: 4 });
   const db = drizzle(pool, { schema });
   return { db, pool };

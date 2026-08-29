@@ -122,6 +122,23 @@ export function loadConfigOrExit(raw: NodeJS.ProcessEnv = process.env): AppConfi
   return parsed.config;
 }
 
+let cachedConfig: AppConfig | null = null;
+
+/**
+ * Memoized config accessor for the request/server path. By the time the HTTP
+ * server is running, the startup pre-flight has already validated config, so a
+ * failure here is exceptional — we throw rather than exit the process.
+ */
+export function getConfig(raw: NodeJS.ProcessEnv = process.env): AppConfig {
+  if (cachedConfig) return cachedConfig;
+  const parsed = parseConfig(raw);
+  if (!parsed.ok) {
+    throw new Error("invalid configuration:\n" + parsed.errors.join("\n"));
+  }
+  cachedConfig = parsed.config;
+  return cachedConfig;
+}
+
 function safeHost(url: string): string | null {
   try {
     return new URL(url).hostname;
