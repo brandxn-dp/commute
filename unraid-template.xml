@@ -32,7 +32,7 @@
 
   <Config Name="WebUI Port" Target="3000" Default="3000" Mode="tcp" Description="Host port to reach the web UI on." Type="Port" Display="always" Required="true" Mask="false">3000</Config>
 
-  <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="postgres://commute:commute@YOUR_DB_HOST:5432/commute" Mode="" Description="PostgreSQL connection string for your database container." Type="Variable" Display="always" Required="true" Mask="false"></Config>
+  <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="postgresql://commute:PASSWORD@UNRAID-LAN-IP:5432/commute" Mode="" Description="PostgreSQL connection string. On Unraid's default bridge, containers cannot resolve each other by name, so use the Unraid LAN IP + the DB's published port (e.g. 192.168.1.50:5432) rather than the container name. Container name works only if both containers share a custom Docker network." Type="Variable" Display="always" Required="true" Mask="false"></Config>
 
   <Config Name="APP_URL" Target="APP_URL" Default="https://commute.example.com" Mode="" Description="Full external URL users reach this app on (scheme + host, no trailing slash). Must match your reverse-proxy address or OAuth callbacks will break." Type="Variable" Display="always" Required="true" Mask="false"></Config>
 

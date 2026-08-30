@@ -30,8 +30,21 @@ Commute needs PostgreSQL 15 or newer. The simplest path is the official
      container name. If you expose it, restrict it to your LAN.
 3. Apply and confirm the container starts.
 
-Note the database's **container name** (e.g. `postgres`) — you'll use it as the
-host in the connection string.
+Note the database's **container name** (e.g. `postgres`) and its published port.
+
+> **Important — Unraid networking.** On Unraid's **default `bridge` network,
+> containers cannot reach each other by name** (`@postgres:5432` fails with
+> `getaddrinfo ENOTFOUND postgres`). Use one of these for the DB host:
+>
+> - **Host IP + published port (simplest):** if the Postgres container publishes
+>   its port (you'll see `0.0.0.0:5432->5432/tcp`), use the Unraid server's LAN
+>   IP, e.g. `@192.168.1.50:5432`.
+> - **Shared custom network:** create/attach both containers to the same
+>   user-defined Docker network (Edit container → *Network Type*), then the
+>   container name (`@postgres:5432`) resolves.
+>
+> Container names only work on the second option — the default bridge does not
+> provide name resolution.
 
 ## 2. Add the Commute template
 
@@ -45,9 +58,9 @@ Until Commute is in the Community Applications store, add its template by URL:
    | Field | Value |
    | --- | --- |
    | **WebUI Port** | `3000` (or any free host port) |
-   | **DATABASE_URL** | `postgres://commute:YOURPASSWORD@postgres:5432/commute` — use your DB container name as the host |
+   | **DATABASE_URL** | `postgres://commute:YOURPASSWORD@HOST:5432/commute` — set `HOST` per the networking note above (Unraid LAN IP if the port is published, or the container name only if on a shared custom network). **Not** `@postgres` on the default bridge. |
    | **APP_URL** | The exact URL you'll reach the app on, e.g. `https://commute.example.com` or `http://TOWER-IP:3000`. **No trailing slash.** |
-   | **SESSION_SECRET** | A random 32+ char string. Generate with `openssl rand -base64 48` |
+   | **SESSION_SECRET** | *Optional* — leave blank to have the app generate and persist one automatically. Set a 32+ char value only to control it explicitly. |
    | **DEFAULT_TIMEZONE** | e.g. `America/New_York` |
    | **ADMIN_EMAIL** *(optional)* | Email guaranteed admin on first boot |
 
