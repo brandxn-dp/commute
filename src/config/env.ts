@@ -41,9 +41,13 @@ const envSchema = z
       .url("must be a full URL including scheme, e.g. https://commute.example.com")
       .refine((v) => !v.endsWith("/"), { message: "must not have a trailing slash" }),
 
+    // Optional: if unset, the app generates and persists one in the database on
+    // first boot (so a lost env var never breaks sessions). If set, it wins and
+    // must be at least 32 characters.
     SESSION_SECRET: z
       .string()
-      .min(32, "must be at least 32 characters (generate with: openssl rand -base64 48)"),
+      .min(32, "must be at least 32 characters (generate with: openssl rand -base64 48)")
+      .optional(),
 
     PORT: z.coerce.number().int().min(1).max(65535).default(3000),
 

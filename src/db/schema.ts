@@ -34,6 +34,10 @@ export const settings = pgTable(
     planningHorizonWeeks: integer("planning_horizon_weeks").notNull().default(8),
     // Monthly ceiling on travel-provider API calls (§2 cost control).
     travelMonthlyCallCeiling: integer("travel_monthly_call_ceiling").notNull().default(5000),
+    // Auto-generated session-signing secret, used when SESSION_SECRET env is
+    // unset. Persisting it here means losing the env var (e.g. an Unraid field
+    // reset) does not break sessions — the app reuses the stored one.
+    sessionSecret: text("session_secret"),
     // Schema/bootstrap bookkeeping.
     bootstrappedAt: timestamp("bootstrapped_at", { withTimezone: true })
       .notNull()

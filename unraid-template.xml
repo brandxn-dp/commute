@@ -36,7 +36,7 @@
 
   <Config Name="APP_URL" Target="APP_URL" Default="https://commute.example.com" Mode="" Description="Full external URL users reach this app on (scheme + host, no trailing slash). Must match your reverse-proxy address or OAuth callbacks will break." Type="Variable" Display="always" Required="true" Mask="false"></Config>
 
-  <Config Name="SESSION_SECRET" Target="SESSION_SECRET" Default="" Mode="" Description="Random secret, at least 32 chars. Generate with: openssl rand -base64 48" Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="SESSION_SECRET" Target="SESSION_SECRET" Default="" Mode="" Description="Optional. Leave BLANK to have the app generate and persist one automatically (recommended). If you set it, use 32+ chars. NOTE: not masked, so Unraid keeps it across edits." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
 
   <Config Name="DEFAULT_TIMEZONE" Target="DEFAULT_TIMEZONE" Default="America/New_York" Mode="" Description="IANA timezone the schedule is displayed in." Type="Variable" Display="always" Required="false" Mask="false">America/New_York</Config>
 

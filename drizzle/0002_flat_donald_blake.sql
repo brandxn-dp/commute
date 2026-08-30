@@ -1,0 +1,1 @@
+ALTER TABLE "settings" ADD COLUMN "session_secret" text;

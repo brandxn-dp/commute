@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { hashPassword, verifyPassword } from "../src/lib/auth/password.js";
 import { createSessionToken, verifySessionToken } from "../src/lib/auth/session.js";
+import { generateSecret } from "../src/lib/auth/secret.js";
 
 describe("password hashing", () => {
   it("round-trips a correct password", async () => {
@@ -63,5 +64,20 @@ describe("session tokens", () => {
     expect(verifySessionToken("garbage", secret)).toBeNull();
     expect(verifySessionToken("", secret)).toBeNull();
     expect(verifySessionToken(undefined, secret)).toBeNull();
+  });
+});
+
+describe("generated session secret", () => {
+  it("is long enough and unique per call", () => {
+    const a = generateSecret();
+    const b = generateSecret();
+    expect(a.length).toBeGreaterThanOrEqual(32);
+    expect(a).not.toBe(b);
+  });
+
+  it("works as a signing key", () => {
+    const s = generateSecret();
+    const token = createSessionToken("u", s);
+    expect(verifySessionToken(token, s)?.uid).toBe("u");
   });
 });

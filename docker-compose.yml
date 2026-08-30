@@ -36,7 +36,9 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://commute:commute@db:5432/commute}
       APP_URL: ${APP_URL:-http://localhost:3000}
-      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET must be set in .env}
+      # Optional: leave unset to have the app generate and persist one on first
+      # boot. Set it only if you want to control the value explicitly (32+ chars).
+      SESSION_SECRET: ${SESSION_SECRET:-}
       PORT: ${PORT:-3000}
       DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE:-America/New_York}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}

@@ -72,10 +72,16 @@ describe("config validation (§7.5)", () => {
     if (!r.ok) expect(r.errors.join("\n")).toContain("ADMIN_EMAIL");
   });
 
-  it("reports a blank required var as Required, not a format error", () => {
+  it("treats a blank optional SESSION_SECRET as unset (auto-generated later)", () => {
     const r = parseConfig({ ...base, SESSION_SECRET: "" });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.config.SESSION_SECRET).toBeUndefined();
+  });
+
+  it("reports a blank required var as Required, not a format error", () => {
+    const r = parseConfig({ ...base, DATABASE_URL: "" });
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.errors.join("\n")).toMatch(/SESSION_SECRET.*[Rr]equired/);
+    if (!r.ok) expect(r.errors.join("\n")).toMatch(/DATABASE_URL.*[Rr]equired|[Rr]equired.*DATABASE_URL/);
   });
 
   it("requires GOOGLE_ROUTES_API_KEY when TRAVEL_PROVIDER=google", () => {

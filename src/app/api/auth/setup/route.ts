@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   try {
     const user = await setupOwner(getRequestDb(), parsed.data.email, parsed.data.password);
     const res = NextResponse.json({ user });
-    setSessionCookie(res, user.id);
+    await setSessionCookie(res, user.id);
     return res;
   } catch (err) {
     // e.g. "setup already completed"
