@@ -59,6 +59,25 @@ describe("config validation (§7.5)", () => {
     if (!r.ok) expect(r.errors.join("\n")).toContain("DEFAULT_TIMEZONE");
   });
 
+  it("treats an empty-string optional var as unset (Docker/Unraid blank field)", () => {
+    // Regression: a blank ADMIN_EMAIL field arrives as "" and must not fail.
+    const r = parseConfig({ ...base, ADMIN_EMAIL: "", BOOTSTRAP_TOKEN: "", GOOGLE_CLIENT_ID: "" });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.config.ADMIN_EMAIL).toBeUndefined();
+  });
+
+  it("still rejects a non-empty invalid ADMIN_EMAIL", () => {
+    const r = parseConfig({ ...base, ADMIN_EMAIL: "not-an-email" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join("\n")).toContain("ADMIN_EMAIL");
+  });
+
+  it("reports a blank required var as Required, not a format error", () => {
+    const r = parseConfig({ ...base, SESSION_SECRET: "" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join("\n")).toMatch(/SESSION_SECRET.*[Rr]equired/);
+  });
+
   it("requires GOOGLE_ROUTES_API_KEY when TRAVEL_PROVIDER=google", () => {
     const r = parseConfig({ ...base, TRAVEL_PROVIDER: "google" });
     expect(r.ok).toBe(false);

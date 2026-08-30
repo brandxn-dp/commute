@@ -95,7 +95,15 @@ export type AppConfig = z.infer<typeof envSchema>;
 export function parseConfig(
   raw: NodeJS.ProcessEnv = process.env,
 ): { ok: true; config: AppConfig } | { ok: false; errors: string[] } {
-  const result = envSchema.safeParse(raw);
+  // Docker/Unraid pass a blank field as an empty string, not an absent key.
+  // Treat "" as unset across the board so optional fields fall back to
+  // undefined (and their defaults) instead of failing format checks, and so a
+  // truly-required-but-blank var reports the clearer "Required" message.
+  const cleaned: Record<string, string | undefined> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    cleaned[key] = value === "" ? undefined : value;
+  }
+  const result = envSchema.safeParse(cleaned);
   if (result.success) {
     return { ok: true, config: result.data };
   }
